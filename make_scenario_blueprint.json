@@ -1,0 +1,39 @@
+{
+  "name": "Vapi to Google Calendar",
+  "modules": [
+    {
+      "module": "webhook",
+      "name": "Receive Vapi Webhook",
+      "settings": {
+        "url": "https://hook.make.com/your-webhook-id",
+        "method": "POST"
+      },
+      "description": "Custom webhook to receive appointment data"
+    },
+    {
+      "module": "tools.parseJson",
+      "name": "Parse JSON",
+      "settings": {
+        "json": "{{1.body}}"
+      },
+      "description": "Extract time, name and notes from the webhook payload"
+    },
+    {
+      "module": "google.calendar.createEvent",
+      "name": "Create Google Calendar Event",
+      "settings": {
+        "calendar_id": "your-calendar-id",
+        "summary": "{{2.name}}",
+        "start": "{{2.start_time}}",
+        "end": "{{2.end_time}}",
+        "description": "{{2.notes}}"
+      },
+      "description": "Creates event using data from Vapi"
+    }
+  ],
+  "connections": [
+    { "from": 1, "to": 2 },
+    { "from": 2, "to": 3 }
+  ],
+  "notes": "Replace placeholders with your actual webhook URL, calendar ID, and field mappings"
+}
